@@ -1,2 +1,5 @@
 log.txt
 videos/
+node_modules
+next-env.d.ts
+.next
