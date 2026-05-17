@@ -132,6 +132,21 @@
             font-size: 13px;
         }
 
+        h3 {
+            font-size: 17px;
+            font-weight: 600;
+            margin: 24px 0 8px;
+            color: var(--text);
+        }
+
+        code {
+            font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+            font-size: 0.92em;
+            background: rgba(0, 0, 0, 0.04);
+            padding: 1px 5px;
+            border-radius: 3px;
+        }
+
         @media (max-width: 600px) {
             .container {
                 padding: 32px 16px 64px;
@@ -150,6 +165,10 @@
                 font-size: 20px;
             }
 
+            h3 {
+                font-size: 16px;
+            }
+
             body {
                 font-size: 16px;
             }
@@ -162,191 +181,419 @@
         <header class="page-header">
             <div class="brand">Skystra</div>
             <h1>Privacy Policy</h1>
-            <p class="updated">Last updated: May 7, 2026</p>
+            <p class="updated">Last updated: May 17, 2026</p>
         </header>
 
         <main>
             <p class="intro">
-                This Privacy Policy describes how Skystra ("we", "us", or "the app")
-                collects, uses, and protects your information when you use the Skystra
-                mobile application, including during its beta testing period.
+                This Privacy Policy describes how Skystra ("we," "us," or "the app")
+                collects, uses, and shares your information when you use the Skystra
+                mobile application, including during its TestFlight beta period. By
+                creating an account or using Skystra you agree to the practices
+                described below. If you do not agree, please do not use the app.
             </p>
 
-            <h2>Information We Collect</h2>
+            <h2>Who we are</h2>
             <p>
-                <strong>Account information.</strong> When you create a Skystra account
-                using an email address and password, we collect your email and a
-                password hash (passwords are stored as a salted hash, not in plain
-                text). If you sign in with <strong>Sign in with Apple</strong>, Apple
-                shares with us a unique identifier and either your real email or an
-                Apple-generated private relay email, based on your choice. You may also
-                optionally share your name on first sign-in. We use this information
-                solely to create and authenticate your account. You may optionally
-                provide a display name, profile photo, and biographical details.
+                Skystra is operated by Kyle Greer ("we"), an individual developer based
+                in the United States. You can reach us at
+                <a href="mailto:wilkylegreer@gmail.com">wilkylegreer@gmail.com</a> for
+                any privacy question, request, or complaint.
             </p>
+
+            <h2>Summary (for the impatient)</h2>
+            <ul>
+                <li>We collect what's needed to run a small social photo app: account identity, the photos and captions
+                    you post, where you took them, and basic device info to deliver notifications and fix crashes.</li>
+                <li><strong>You cannot publish a post without sharing your precise location.</strong> Posting a photo
+                    records the exact latitude and longitude attached to that photo.</li>
+                <li><strong>All posts, profiles, follows, reactions, RSVPs, and event details on Skystra are publicly
+                        readable today</strong> — including by people who do not have a Skystra account. The Settings
+                    toggles labeled "Private account" and "Show location on posts" do not yet take effect.</li>
+                <li>We do <strong>not</strong> sell or rent your personal information. We do <strong>not</strong> use
+                    your content to train advertising profiles. We do <strong>not</strong> show ads.</li>
+                <li>The app is currently distributed via Apple's TestFlight as a beta product. Your data may be wiped
+                    during this period as the database schema continues to change.</li>
+            </ul>
+            <p>The rest of this document is the long version of those bullets.</p>
+
+            <h2>Information We Collect</h2>
+
+            <h3>Account information</h3>
             <p>
-                <strong>Content you create.</strong> Skystra stores the journal
-                entries, posts, photos, and other content you create within the app.
+                When you create a Skystra account using an email address and password
+                we collect your email and a salted password hash (passwords are never
+                stored in plain text). If you sign in with <strong>Sign in with
+                    Apple</strong>, Apple shares with us a unique account identifier and
+                either your real email or an Apple-generated private relay address,
+                based on your choice; you may also optionally share your name on first
+                sign-in. We use this information solely to create and authenticate your
+                account. You may also optionally provide a display name, profile photo,
+                biographical details, and a chosen unit of distance.
+            </p>
+
+            <h3>Content you create</h3>
+            <p>
+                Skystra stores the photos, captions, and event details you publish
+                through the app, along with the date and time each photo was captured.
                 This content is associated with your account.
             </p>
+
+            <h3>Location data</h3>
             <p>
-                <strong>Location data.</strong> If you grant permission, Skystra
-                accesses your device's location to attach geographic context to entries
-                you create. Location is only collected when the app is in use and only
-                when you actively use a feature that requests it.
+                If you grant the iOS "When in Use" location permission, Skystra reads
+                your device's current latitude and longitude. We use your location for
+                three things:
+            </p>
+            <ul>
+                <li><strong>Attaching coordinates to posts and events you create.</strong> When you publish a post, the
+                    precise latitude and longitude (as decimal degrees) and a reverse-geocoded "City, State" label are
+                    saved to the post row. The same applies to events you create.</li>
+                <li><strong>Showing nearby posts on the Discover tab.</strong> Your location is sent to a database
+                    function (<code>posts_within_radius</code>) that returns posts within a radius you control. The
+                    function does not store your query; only the resulting list of posts is returned to your device.
+                </li>
+                <li><strong>Local golden-hour calculations.</strong> The app computes the next sunrise and sunset for
+                    your current location on-device to schedule the next local notification.</li>
+            </ul>
+            <p>
+                <strong>Location is effectively required to publish a post.</strong>
+                The composer blocks publishing when location permission is denied. You
+                can still browse, follow accounts, and react to posts without granting
+                location, but you cannot capture and share a new photo.
             </p>
             <p>
-                <strong>Camera and photo library access.</strong> If you grant
-                permission, Skystra can access your camera and photo library so you can
-                capture and attach photos in the app. We only access photos you
-                explicitly select or capture.
+                <strong>Coordinates are stored at full precision.</strong> Each post
+                row in our database stores a <code>float8</code> latitude and longitude
+                (approximately ten decimal places of precision, or sub-meter accuracy
+                on the surface of the earth). See <strong>How your content is
+                    shared</strong> below for who can read those coordinates today.
+            </p>
+
+            <h3>Camera and photo library access</h3>
+            <p>
+                If you grant permission, Skystra accesses your camera so you can
+                capture sunrise and sunset photos in the app, and your photo library
+                so you can attach a recently-taken photo or save a captured photo back.
+                We only access photos you explicitly select or capture in the app; we
+                do not scan your library in the background.
+            </p>
+
+            <h3>Push notification tokens</h3>
+            <p>
+                If you enable push notifications, your device generates a token issued
+                by Apple. We may store this token, associated with your account, to
+                deliver notifications to your device. The token does not by itself
+                identify you to anyone other than us and Apple.
             </p>
             <p>
-                <strong>Push notification tokens.</strong> If you enable push
-                notifications, your device generates a push token issued by Apple. We
-                store this token, associated with your account, so we can deliver
-                notifications to your device. The token does not by itself identify you
-                to anyone other than us and Apple.
+                As of the date above, <strong>all Skystra notifications are scheduled
+                    locally on your device</strong> (next sunrise, next sunset, 30 minutes
+                before an event you've RSVP'd to). We do not currently send any remote
+                notifications from our servers. We may add remote notifications later
+                in the beta period; this policy will be updated before that change
+                ships.
+            </p>
+
+            <h3>Diagnostic data via TestFlight</h3>
+            <p>
+                While Skystra is distributed through TestFlight, crash logs and basic
+                diagnostic data are provided to us through Apple's TestFlight service
+                and are subject to <strong>Apple's Privacy Policy</strong>. This data
+                does not personally identify you to us.
             </p>
             <p>
-                <strong>Usage and diagnostic data.</strong> We collect basic technical
-                information such as crash reports to improve reliability. This data
-                does not personally identify you. During the beta period, diagnostic
-                data is provided through Apple's TestFlight service and is subject to
-                Apple's Privacy Policy.
+                We do not embed third-party analytics or advertising SDKs (no Google
+                Analytics, no Facebook Pixel, no AppsFlyer, no Mixpanel, no Sentry, no
+                Crashlytics).
+            </p>
+
+            <h3>Feedback you submit</h3>
+            <p>
+                If you tap <strong>Send feedback</strong> in Settings, we collect:
+            </p>
+            <ul>
+                <li>The category you picked (Bug / Feature idea / Thoughts)</li>
+                <li>The message you typed (up to 4,000 characters)</li>
+                <li>An optional reply email, if you provided one</li>
+                <li>Your app version and build number, your iOS version, your device hardware model identifier (e.g.
+                    <code>iPhone15,3</code>), and your current device locale (e.g. <code>en_US</code>)</li>
+                <li>The user ID of the account submitting the feedback</li>
+                <li>The submission timestamp</li>
+            </ul>
+            <p>
+                The in-app feedback form tells you, in its intro line, that your device
+                and app version are attached automatically. The hardware identifier
+                and locale are part of that device context; we capture them so we can
+                reproduce bugs without asking you. Feedback rows are not readable from
+                the app — only the developer can view them through the Supabase
+                dashboard. If you delete your account, your feedback rows are kept but
+                their <code>user_id</code> is cleared (set to NULL).
+            </p>
+
+            <h3>Account switcher / keychain</h3>
+            <p>
+                If you sign into more than one Skystra account on the same device, the
+                app remembers each account's access token and refresh token in the
+                iOS keychain so you can switch between them without re-typing your
+                password. Tokens are stored with the
+                <code>kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly</code>
+                attribute, which means:
+            </p>
+            <ul>
+                <li>The tokens are not synced to iCloud and do not restore onto a different device when you migrate to a
+                    new phone.</li>
+                <li>The tokens are readable only while the device has been unlocked at least once since reboot.</li>
+            </ul>
+            <p>
+                You can remove a stored account from your device by long-pressing its
+                row in the account switcher (long-press the <strong>You</strong> tab
+                to open it) and tapping <strong>Remove from this device</strong>.
+                Removing the account from the switcher does not delete the underlying
+                Skystra account — see <strong>Your rights and choices</strong> for
+                account deletion.
             </p>
 
             <h2>How We Use Your Information</h2>
             <p>We use the information we collect solely to:</p>
             <ul>
-                <li>Provide the core functionality of the app (storing your entries, syncing across your devices,
-                    displaying content)</li>
-                <li>Communicate with you about your account or important changes to the service</li>
-                <li>Diagnose and fix bugs, especially during the beta testing period</li>
-                <li>Improve the app's reliability and usability</li>
+                <li>Provide the core functionality of the app — authenticate you, store your posts and events, render
+                    the feeds and the people-search surface, schedule golden-hour notifications, and let you switch
+                    between accounts on the same device.</li>
+                <li>Communicate with you about your account or important changes to the service.</li>
+                <li>Triage and fix bugs (especially during the beta period) using the feedback you submit and the crash
+                    data Apple shares with us.</li>
+            </ul>
+            <p>We do <strong>not</strong>:</p>
+            <ul>
+                <li>Sell, rent, or trade your personal information to anyone.</li>
+                <li>Use your content or behavior for advertising, ad targeting, or third-party analytics.</li>
+                <li>Run user-tracking SDKs from third parties.</li>
+                <li>Use your photos to train a machine learning model.</li>
+                <li>Send your data to a generative-AI service or large language model.</li>
             </ul>
             <p>
-                We do not sell your personal information. We do not use your content
-                for advertising. We do not share your data with third parties except as
-                described below.
+                Because we do not track you across apps or websites owned by other
+                companies, the app currently does <strong>not</strong> prompt for App
+                Tracking Transparency permission, and our App Store privacy nutrition
+                label reports tracking as "Not Used."
             </p>
 
             <h2>How Your Content Is Shared</h2>
             <p>
                 Skystra is a social application. By design, certain information is
-                visible to other Skystra users:
+                visible to others — and during this stage of the beta, the "others"
+                includes the public internet, not only signed-in Skystra users.
+            </p>
+            <p>
+                The following data is currently publicly readable through our Supabase
+                backend, with no requirement that the reader hold a Skystra account:
             </p>
             <ul>
-                <li><strong>Your profile</strong> — your username, display name, profile photo, and biography are
-                    searchable and visible to other signed-in users.</li>
-                <li><strong>Your social connections</strong> — when you follow another user or are followed by one,
-                    those connections are visible to other users.</li>
-                <li><strong>Your posts</strong> — posts you create within Skystra are visible to other Skystra users.
-                    The app offers per-post audience controls (such as Everyone, Friends, or Only Me); however, during
-                    the beta period, audience controls are not yet enforced server-side and all posts should be
-                    considered visible to other Skystra users. We will enforce audience controls in a future update.
-                    Please do not post content you would not want other Skystra users to see.</li>
-                <li><strong>Place names attached to posts and events</strong> — if you choose to attach a location label
-                    to a post or event, that label is visible to anyone who can see the post or event.</li>
+                <li><strong>Your profile</strong> — username, display name, profile photo, bio.</li>
+                <li><strong>Your posts</strong> — photos, captions, sunrise/sunset type, the reverse-geocoded "City,
+                    State" label, <strong>the precise latitude and longitude where the photo was taken</strong>, the
+                    time captured, and the time posted.</li>
+                <li><strong>Your social graph</strong> — who you follow and who follows you.</li>
+                <li><strong>Your reactions</strong> — which posts you have reacted to and with which reaction.</li>
+                <li><strong>Events</strong> you create — title, description, "City, State" label, the precise latitude
+                    and longitude, and event time — and <strong>which users have RSVP'd</strong> to them.</li>
             </ul>
             <p>
-                You can delete posts at any time within the app. Deleting a post
-                removes it from other users' views.
+                This means that anyone who knows the publicly published URL of our
+                backend service, and is willing to query it, can read the items above.
+                We acknowledge this is broader than a typical "visible to other
+                signed-in users" framing and we are working on tightening the
+                backend's read policies as a pre-launch task; this policy will be
+                updated when that lands. In the meantime, <strong>please treat
+                    anything you post on Skystra as public on the open internet</strong>.
+            </p>
+
+            <h3>About the audience picker</h3>
+            <p>
+                The composer for new posts currently displays a picker labeled
+                <strong>Everyone / Friends / Only Me</strong>. As of the date above,
+                <strong>your selection has no effect</strong> — the field is not yet
+                stored on the post and every post is treated as "Everyone." We are
+                leaving the control visible because the implementation work is in
+                progress, but you should assume your selection is ignored until this
+                policy says otherwise.
+            </p>
+
+            <h3>About the Settings toggles</h3>
+            <p>Settings → Privacy contains two switches:</p>
+            <ul>
+                <li><strong>Private account.</strong> Does not currently restrict who can see your profile or posts. It
+                    is a local-only preference stored on your device.</li>
+                <li><strong>Show location on posts.</strong> Does not currently hide the "City, State" label or the
+                    underlying coordinates on posts you publish. It is a local-only preference stored on your device.
+                </li>
+            </ul>
+            <p>
+                Both switches will be wired through to the backend in a future update.
+                Until then, do not rely on them to limit visibility.
+            </p>
+
+            <h3>Deleting a post</h3>
+            <p>
+                You can delete any of your own posts from the app. Deleting a post
+                removes the row from our database; cached copies in other people's
+                feeds will clear on their next refresh.
             </p>
 
             <h2>Sharing Content Outside Skystra</h2>
             <p>
-                Skystra includes a Share button that lets you send a photo you
-                captured, along with a link back to its Skystra post, to other apps on
-                your device — for example, Messages, Mail, or social apps. Once
-                content leaves Skystra through the share sheet, what happens to it is
-                governed by the receiving app's privacy practices, not ours.
+                Skystra includes a Share button on the post-success screen that lets
+                you send the photo you just captured, along with a
+                <code>skystra://post/&hellip;</code> deep link back to its post, to
+                other apps on your device — for example Messages, Mail, or
+                Instagram. Once content leaves Skystra through the iOS share sheet,
+                what happens to it is governed by the receiving app's privacy
+                practices, not ours.
             </p>
 
-            <h2>Push Notifications</h2>
-            <p>If you grant permission, Skystra sends push notifications for:</p>
-            <ul>
-                <li><strong>Daily sun events</strong> — local sunrise and sunset times based on the location associated
-                    with your account.</li>
-                <li><strong>Social activity on your content</strong> — for example, when another user likes or comments
-                    on a post you have shared (this feature may be added during the beta period).</li>
-            </ul>
-            <p>
-                You can disable push notifications at any time in your device's iOS
-                Settings under Notifications → Skystra, or within the app's settings.
-                Disabling notifications does not delete your account or content.
-            </p>
-
-            <h2>How We Store Your Data</h2>
-            <p>
-                Skystra uses <strong>Supabase</strong> as its backend infrastructure
-                provider. Your account data and content are stored in Supabase's
-                databases and storage services, which are operated by Supabase Inc.
-                Supabase acts as a data processor on our behalf. You can review
-                Supabase's privacy practices at
-                <a href="https://supabase.com/privacy">https://supabase.com/privacy</a>.
-            </p>
-            <p>
-                Data is encrypted in transit using HTTPS and at rest using standard
-                industry practices.
-            </p>
+            <h2>Map and Location-Search Providers</h2>
             <p>
                 When you use map or location-search features within Skystra, those
-                interactions are handled by <strong>Apple's MapKit</strong> service.
-                Map tile requests and place searches are processed by Apple under
+                interactions are handled by <strong>Apple's MapKit</strong> and
+                <strong>Core Location</strong> services. Map tile requests and place
+                lookups are processed by Apple under
                 <a href="https://www.apple.com/legal/privacy/">Apple's Privacy Policy</a>
                 and are not transmitted to our servers in personally identifying form.
             </p>
 
+            <h2>How and Where We Store Your Data</h2>
+            <p>
+                Skystra uses <strong>Supabase</strong> (operated by Supabase, Inc.) as
+                its backend infrastructure provider for authentication, the Postgres
+                database that stores account, post, follow, reaction, event, and
+                feedback rows, and the object storage bucket that holds uploaded
+                photos. Supabase acts as a data processor on our behalf. You can
+                review Supabase's privacy practices at
+                <a href="https://supabase.com/privacy">https://supabase.com/privacy</a>.
+            </p>
+            <p>
+                Data in transit between the app and Supabase is encrypted with HTTPS.
+                Data at rest on Supabase is encrypted using standard industry
+                practices.
+            </p>
+            <p>
+                We do not run our own servers and we do not currently transfer your
+                data to any other processor, with the exception of Apple (Sign in with
+                Apple, MapKit, TestFlight crash reports, and APNs push delivery),
+                whose services are governed by Apple's own privacy policy.
+            </p>
+
+            <h2>Retention</h2>
+            <ul>
+                <li><strong>Account row and profile fields</strong> — retained while your account exists.</li>
+                <li><strong>Posts, photos, events, follows, reactions, RSVPs</strong> — retained while your account
+                    exists, or until you delete them individually.</li>
+                <li><strong>Feedback submissions</strong> — retained indefinitely so we can revisit past reports against
+                    newer builds. If you delete your account, the <code>user_id</code> on your feedback rows is cleared
+                    so the rows become anonymous.</li>
+                <li><strong>Keychain tokens for the account switcher</strong> — retained on the device until you remove
+                    the account from the switcher, sign out from that account explicitly, or uninstall the app.</li>
+                <li><strong>TestFlight crash data</strong> — retained by Apple under Apple's retention rules.</li>
+                <li><strong>Beta data wipes.</strong> Because Skystra is in active beta development, we may reset the
+                    database (deleting all accounts, posts, follows, reactions, events, RSVPs, and feedback) between
+                    builds without prior notice. The in-app <strong>Beta notice</strong> shown to each new account on
+                    first launch makes this explicit. If you want to keep a copy of a photo you posted, please save it
+                    from your camera roll — we cannot restore wiped beta content.</li>
+            </ul>
+
             <h2>Beta Testing Disclosure</h2>
             <p>
                 Skystra is currently distributed via Apple's TestFlight as a beta
-                product. Beta software may contain bugs that affect data handling.
-                While we make reasonable efforts to protect your data, beta software is
-                provided as-is.
-            </p>
-            <p>
-                Crash reports and diagnostic data collected by TestFlight are subject
-                to Apple's Privacy Policy.
+                product. Beta software may contain bugs that affect data handling,
+                including bugs that could cause data to be exposed more broadly than
+                intended. While we make reasonable efforts to protect your data, beta
+                software is provided as-is.
             </p>
 
             <h2>Your Rights and Choices</h2>
             <p>You can:</p>
             <ul>
-                <li><strong>Access your data</strong> by viewing it in the app.</li>
-                <li><strong>Update or correct</strong> your information through the app's settings.</li>
-                <li><strong>Delete your account and all associated data</strong> through account settings within the
-                    app, or by emailing <a href="mailto:wilkylegreer@gmail.com">wilkylegreer@gmail.com</a> from the
-                    address associated with your account. Deletion requests are processed within 30 days.</li>
+                <li><strong>Access your data</strong> by viewing it in the app (profile, posts, follows, reactions,
+                    RSVPs, events).</li>
+                <li><strong>Update or correct</strong> your account information through Settings → Profile → Edit
+                    profile.</li>
+                <li><strong>Delete content</strong> — posts, events, follows, and reactions can be deleted individually
+                    from the app.</li>
+                <li><strong>Delete your account and all associated data</strong> through Settings → Delete account, or
+                    by emailing <a href="mailto:wilkylegreer@gmail.com">wilkylegreer@gmail.com</a> from the address
+                    associated with your account. Deletion requests are processed within 30 days. When an account is
+                    deleted, the associated profile, posts, follows, reactions, RSVPs, and events are removed; feedback
+                    rows are retained but their <code>user_id</code> is cleared.</li>
+                <li><strong>Remove a stored account from the switcher</strong> without deleting the underlying account —
+                    long-press the account row in the account switcher and tap "Remove from this device."</li>
             </ul>
             <p>
                 If you are located in the European Economic Area, the United Kingdom,
-                or California, you may have additional rights under GDPR or CCPA,
-                including the right to access, port, or restrict processing of your
-                personal data. Email
+                Switzerland, California, Colorado, Connecticut, Virginia, Utah, or
+                another jurisdiction that grants additional data-subject rights, you
+                may have rights to access, port, correct, restrict, or object to the
+                processing of your personal data under GDPR, UK GDPR, CCPA / CPRA, or
+                the equivalent local law. Email
                 <a href="mailto:wilkylegreer@gmail.com">wilkylegreer@gmail.com</a> to
-                exercise these rights.
+                exercise these rights. We will respond within the timeframes required
+                by the applicable law (typically 30 to 45 days). We do not charge a
+                fee for verified rights requests.
+            </p>
+            <p>The legal basis under GDPR for our processing is:</p>
+            <ul>
+                <li><strong>Performance of a contract</strong> with you (the Terms accepted when you create an account)
+                    — for storing your account, your posts, and delivering the core social functionality.</li>
+                <li><strong>Legitimate interest</strong> in fixing bugs and improving the app — for the device context
+                    attached to feedback you submit and the crash data Apple shares.</li>
+                <li><strong>Your consent</strong>, granted through iOS permission prompts — for location, camera, photo
+                    library, and notification access.</li>
+            </ul>
+            <p>
+                You can withdraw any iOS-level consent at any time in Settings →
+                Skystra on your device.
+            </p>
+
+            <h2>International Transfers</h2>
+            <p>
+                Skystra's backend (Supabase) and Apple's services may store and
+                process your data on servers located outside your home country,
+                including in the United States. By using the app you understand that
+                your data may be transferred internationally. We rely on the
+                processor's own contractual safeguards (Supabase's Data Processing
+                Addendum and Apple's published privacy commitments) for any cross-
+                border transfers.
             </p>
 
             <h2>Children's Privacy</h2>
             <p>
-                Skystra is not intended for children under 13. We do not knowingly
-                collect information from children under 13. If you believe a child has
-                provided us with personal information, please email
-                <a href="mailto:wilkylegreer@gmail.com">wilkylegreer@gmail.com</a> and
-                we will delete it.
+                Skystra is not directed to children and is not intended for use by
+                anyone under 13 years of age (or under 16 in jurisdictions where that
+                is the local minimum). We do not knowingly collect personal
+                information from children. If you believe a child has provided us
+                with personal information, email
+                <a href="mailto:wilkylegreer@gmail.com">wilkylegreer@gmail.com</a>
+                and we will delete it.
+            </p>
+            <p>
+                The App Store age rating for Skystra is set accordingly. Because
+                Skystra is a social app where users can share photos and follow other
+                accounts, the rating is at least 17+ during this beta period.
             </p>
 
             <h2>Changes to This Policy</h2>
             <p>
-                We may update this Privacy Policy from time to time. Material changes
-                will be communicated through the app or via email. The "Last updated"
-                date at the top of this policy will reflect the most recent revision.
+                We may update this Privacy Policy from time to time. The "Last
+                updated" date at the top of this document will reflect the most
+                recent revision. Material changes will be communicated through the
+                app (a one-time disclosure on next launch) or via the email
+                associated with your account.
             </p>
 
             <h2>Contact</h2>
             <p>
-                For questions about this Privacy Policy or your data, contact:
+                For questions about this Privacy Policy, your data, or to exercise any
+                rights described above:
             </p>
             <p>
                 <strong>Email:</strong>
