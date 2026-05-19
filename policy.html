@@ -181,7 +181,7 @@
         <header class="page-header">
             <div class="brand">Skystra</div>
             <h1>Privacy Policy</h1>
-            <p class="updated">Last updated: May 17, 2026</p>
+            <p class="updated">Last updated: May 18, 2026</p>
         </header>
 
         <main>
@@ -207,9 +207,17 @@
                     you post, where you took them, and basic device info to deliver notifications and fix crashes.</li>
                 <li><strong>You cannot publish a post without sharing your precise location.</strong> Posting a photo
                     records the exact latitude and longitude attached to that photo.</li>
-                <li><strong>All posts, profiles, follows, reactions, RSVPs, and event details on Skystra are publicly
-                        readable today</strong> — including by people who do not have a Skystra account. The Settings
-                    toggles labeled "Private account" and "Show location on posts" do not yet take effect.</li>
+                <li><strong>Public accounts (the default):</strong> posts, profiles, follows, and reactions on public
+                    accounts are readable through our backend with no Skystra account required, including by people who
+                    do not have an account.</li>
+                <li><strong>Private accounts:</strong> if you turn on <strong>Private account</strong> in Settings, your
+                    <em>posts</em> become readable only to followers you've approved, and new follow attempts at you are
+                    routed through a request-and-accept flow. Your profile, your follow list, and your reactions are
+                    still publicly readable — the private flag currently gates posts only. The Settings toggle labeled
+                    "Show location on posts" still does not take effect.</li>
+                <li><strong>Events are not enabled in this public-beta build.</strong> You will not see a way to create,
+                    browse, or RSVP to events. The feature is retained internally for development and will be
+                    re-introduced in a later release; we will update this policy before that happens.</li>
                 <li>We do <strong>not</strong> sell or rent your personal information. We do <strong>not</strong> use
                     your content to train advertising profiles. We do <strong>not</strong> show ads.</li>
                 <li>The app is currently distributed via Apple's TestFlight as a beta product. Your data may be wiped
@@ -246,9 +254,10 @@
                 three things:
             </p>
             <ul>
-                <li><strong>Attaching coordinates to posts and events you create.</strong> When you publish a post, the
-                    precise latitude and longitude (as decimal degrees) and a reverse-geocoded "City, State" label are
-                    saved to the post row. The same applies to events you create.</li>
+                <li><strong>Attaching coordinates to posts you create.</strong> When you publish a post, the precise
+                    latitude and longitude (as decimal degrees) and a reverse-geocoded "City, State" label are saved to
+                    the post row. (The events feature, which would attach the same information to events you create, is
+                    not enabled in this public-beta build — see the summary above.)</li>
                 <li><strong>Showing nearby posts on the Discover tab.</strong> Your location is sent to a database
                     function (<code>posts_within_radius</code>) that returns posts within a radius you control. The
                     function does not store your query; only the resulting list of posts is returned to your device.
@@ -287,12 +296,52 @@
                 identify you to anyone other than us and Apple.
             </p>
             <p>
-                As of the date above, <strong>all Skystra notifications are scheduled
-                    locally on your device</strong> (next sunrise, next sunset, 30 minutes
-                before an event you've RSVP'd to). We do not currently send any remote
-                notifications from our servers. We may add remote notifications later
-                in the beta period; this policy will be updated before that change
-                ships.
+                As of the date above, <strong>we do not send any remote push
+                    notifications from our servers.</strong> Device-level alerts that
+                arrive on your lock screen are scheduled locally on-device (next
+                sunrise, next sunset, 30 minutes before an event you've RSVP'd to).
+                We may add remote push later in the beta period; this policy will
+                be updated before that change ships.
+            </p>
+
+            <h3>In-app notifications inbox</h3>
+            <p>
+                Separately from device alerts, Skystra has an <strong>in-app
+                    notifications inbox</strong> — the bell icon on the Feed tab. The
+                inbox is backed by a server-side table that holds one row per
+                notification you've received. Rows are inserted automatically by
+                the database (not by the client) when:
+            </p>
+            <ul>
+                <li>Someone follows you, or — if your account is private — requests to follow you.</li>
+                <li>A private account whose follow you previously requested accepts the request.</li>
+                <li>Someone reacts to one of your posts. Reactions on the same post with the same reaction type collapse
+                    to a single inbox row that tracks the count and the three most-recent actors, so a popular sunrise
+                    doesn't generate thirty separate entries.</li>
+                <li>Someone you follow publishes a post.</li>
+            </ul>
+            <p>
+                Each row stores the recipient (you), the actor, the kind of event,
+                optional references to the post or event in question, and read /
+                created / updated timestamps. <strong>You can read your own rows
+                    only</strong> — row-level security on the table denies access to
+                anyone else's inbox, and the client cannot insert rows directly;
+                only the server-side triggers and RPCs can. You can mark rows read,
+                dismiss them, or mark the entire inbox read; dismissed rows are
+                deleted permanently.
+            </p>
+            <p>
+                A separate <strong>notification preferences</strong> row, if it
+                exists for your account, records the categories of notifications
+                you've opted out of (per-kind toggles for follow events, reactions,
+                and followee posts). Rows in this table are created lazily — if you
+                haven't changed any defaults, no row exists.
+            </p>
+            <p>
+                The events feature is not enabled in this public-beta build, so the
+                "someone you follow created an event" notification kind is wired
+                but dormant — no rows are produced until events are re-introduced.
+                This policy will be updated before that happens.
             </p>
 
             <h3>Diagnostic data via TestFlight</h3>
@@ -382,12 +431,17 @@
             <h2>How Your Content Is Shared</h2>
             <p>
                 Skystra is a social application. By design, certain information is
-                visible to others — and during this stage of the beta, the "others"
+                visible to others — and during this stage of the beta, "others"
                 includes the public internet, not only signed-in Skystra users.
+                What is readable depends on whether your account is public or
+                private.
             </p>
+
+            <h3>Public accounts (the default)</h3>
             <p>
-                The following data is currently publicly readable through our Supabase
-                backend, with no requirement that the reader hold a Skystra account:
+                The following data is publicly readable through our Supabase
+                backend, with no requirement that the reader hold a Skystra
+                account:
             </p>
             <ul>
                 <li><strong>Your profile</strong> — username, display name, profile photo, bio.</li>
@@ -396,43 +450,84 @@
                     time captured, and the time posted.</li>
                 <li><strong>Your social graph</strong> — who you follow and who follows you.</li>
                 <li><strong>Your reactions</strong> — which posts you have reacted to and with which reaction.</li>
-                <li><strong>Events</strong> you create — title, description, "City, State" label, the precise latitude
-                    and longitude, and event time — and <strong>which users have RSVP'd</strong> to them.</li>
             </ul>
             <p>
-                This means that anyone who knows the publicly published URL of our
-                backend service, and is willing to query it, can read the items above.
-                We acknowledge this is broader than a typical "visible to other
-                signed-in users" framing and we are working on tightening the
-                backend's read policies as a pre-launch task; this policy will be
-                updated when that lands. In the meantime, <strong>please treat
-                    anything you post on Skystra as public on the open internet</strong>.
+                Anyone who knows the publicly published URL of our backend service,
+                and is willing to query it, can read the items above. <strong>Please
+                    treat anything you post on a public account as public on the open
+                    internet.</strong>
+            </p>
+
+            <h3>Private accounts</h3>
+            <p>If you enable <strong>Private account</strong> in Settings:</p>
+            <ul>
+                <li><strong>Your posts</strong> become readable only to you and to followers whose follow request you
+                    have approved. Anonymous viewers and signed-in Skystra users who do not follow you cannot read the
+                    post row, the photo stored in it, or the coordinates attached to it. This is enforced at the
+                    database layer (row-level security), not only in the in-app UI.</li>
+                <li><strong>Pending follow requests do not grant visibility.</strong> Someone who has requested to
+                    follow you sees your posts only after you tap Accept; until then they see what an unrelated viewer
+                    sees.</li>
+                <li><strong>Your profile, follow list, and reactions remain publicly readable.</strong> The private flag
+                    currently gates posts only. We plan to tighten profile and follow-list visibility in a future
+                    update, and this policy will be revised when that lands.</li>
+                <li><strong>Switching back to public auto-accepts pending requests.</strong> When your account flips
+                    from private to public, every pending follow request targeting you becomes an accepted follow in the
+                    same database transaction, the requesters are notified, and the pending-request rows are deleted.
+                    Going public → private is a one-way change for <em>future</em> follow attempts only — followers you
+                    have already approved continue to see your posts until you remove them.</li>
+            </ul>
+
+            <h3>About follow requests</h3>
+            <p>
+                When you tap <strong>Follow</strong> on a private account, the
+                server records a <strong>follow request</strong> — a row
+                identifying the requester (you), the requestee (the target
+                account), and the time the request was submitted. Follow-request
+                rows are readable only by the two accounts involved; nobody else
+                can list pending requests at or from another user. Approved
+                requests move to the regular follows table and the pending row is
+                deleted; rejected requests are silently dropped, with no
+                notification sent to the requester that they were rejected (only
+                the visible state change from "Requested" back to "Follow").
+                Cancelling a pending request from your side deletes the row
+                immediately.
+            </p>
+
+            <h3>The events feature</h3>
+            <p>
+                The events feature (event details, attendee lists, RSVPs) is not
+                enabled in this public-beta build, so there are no event rows to be
+                exposed to other users from your activity in the app. The
+                server-side hooks that would notify your followers of a new event
+                are wired but dormant; they begin producing rows when the events
+                surface returns. This policy will be updated before that happens.
             </p>
 
             <h3>About the audience picker</h3>
             <p>
                 The composer for new posts currently displays a picker labeled
                 <strong>Everyone / Friends / Only Me</strong>. As of the date above,
-                <strong>your selection has no effect</strong> — the field is not yet
-                stored on the post and every post is treated as "Everyone." We are
-                leaving the control visible because the implementation work is in
-                progress, but you should assume your selection is ignored until this
-                policy says otherwise.
+                <strong>your per-post selection has no effect</strong> — the field
+                is not yet stored on the post and every post is treated as
+                "Everyone." We are leaving the control visible because the
+                implementation work is in progress, but you should assume your
+                selection is ignored until this policy says otherwise. Account-level
+                privacy (Settings → Privacy → Private account) <em>does</em> take
+                effect — see the section above.
             </p>
 
             <h3>About the Settings toggles</h3>
             <p>Settings → Privacy contains two switches:</p>
             <ul>
-                <li><strong>Private account.</strong> Does not currently restrict who can see your profile or posts. It
-                    is a local-only preference stored on your device.</li>
-                <li><strong>Show location on posts.</strong> Does not currently hide the "City, State" label or the
-                    underlying coordinates on posts you publish. It is a local-only preference stored on your device.
-                </li>
+                <li><strong>Private account.</strong> Now wired through to the backend. Turning it on flips the
+                    <code>is_private</code> flag on your profile row, which (a) routes new follow attempts through the
+                    request-and-accept flow described above and (b) restricts your posts to approved followers. Profile,
+                    follow-list, and reaction visibility are unchanged by this toggle.</li>
+                <li><strong>Show location on posts.</strong> Does <strong>not</strong> currently hide the "City, State"
+                    label or the underlying coordinates on posts you publish. It is a local-only preference stored on
+                    your device, and we plan to wire it through in a future update.</li>
             </ul>
-            <p>
-                Both switches will be wired through to the backend in a future update.
-                Until then, do not rely on them to limit visibility.
-            </p>
 
             <h3>Deleting a post</h3>
             <p>
@@ -466,9 +561,10 @@
             <p>
                 Skystra uses <strong>Supabase</strong> (operated by Supabase, Inc.) as
                 its backend infrastructure provider for authentication, the Postgres
-                database that stores account, post, follow, reaction, event, and
-                feedback rows, and the object storage bucket that holds uploaded
-                photos. Supabase acts as a data processor on our behalf. You can
+                database that stores account, post, follow, follow-request, reaction,
+                event, notification, notification-preference, and feedback rows, and
+                the object storage bucket that holds uploaded photos. Supabase acts as a data processor on our behalf.
+                You can
                 review Supabase's privacy practices at
                 <a href="https://supabase.com/privacy">https://supabase.com/privacy</a>.
             </p>
@@ -489,6 +585,13 @@
                 <li><strong>Account row and profile fields</strong> — retained while your account exists.</li>
                 <li><strong>Posts, photos, events, follows, reactions, RSVPs</strong> — retained while your account
                     exists, or until you delete them individually.</li>
+                <li><strong>Pending follow requests</strong> — retained until you cancel them, the target accepts (the
+                    row becomes a follow), the target rejects (silently deleted), or either account is deleted.</li>
+                <li><strong>Notifications inbox rows</strong> — retained until you dismiss them from the inbox, the
+                    underlying subject (post, event, account) is deleted, or your account is deleted. There is no
+                    automatic age-based purge.</li>
+                <li><strong>Notification preferences</strong> — retained while your account exists; if you haven't
+                    changed any defaults, no row exists.</li>
                 <li><strong>Feedback submissions</strong> — retained indefinitely so we can revisit past reports against
                     newer builds. If you delete your account, the <code>user_id</code> on your feedback rows is cleared
                     so the rows become anonymous.</li>
@@ -496,10 +599,11 @@
                     the account from the switcher, sign out from that account explicitly, or uninstall the app.</li>
                 <li><strong>TestFlight crash data</strong> — retained by Apple under Apple's retention rules.</li>
                 <li><strong>Beta data wipes.</strong> Because Skystra is in active beta development, we may reset the
-                    database (deleting all accounts, posts, follows, reactions, events, RSVPs, and feedback) between
-                    builds without prior notice. The in-app <strong>Beta notice</strong> shown to each new account on
-                    first launch makes this explicit. If you want to keep a copy of a photo you posted, please save it
-                    from your camera roll — we cannot restore wiped beta content.</li>
+                    database (deleting all accounts, posts, follows, follow requests, reactions, events, RSVPs,
+                    notifications, notification preferences, and feedback) between builds without prior notice. The
+                    in-app <strong>Beta notice</strong> shown to each new account on first launch makes this explicit.
+                    If you want to keep a copy of a photo you posted, please save it from your camera roll — we cannot
+                    restore wiped beta content.</li>
             </ul>
 
             <h2>Beta Testing Disclosure</h2>
@@ -520,11 +624,18 @@
                     profile.</li>
                 <li><strong>Delete content</strong> — posts, events, follows, and reactions can be deleted individually
                     from the app.</li>
+                <li><strong>Manage your notifications</strong> — read, dismiss, or mark the entire in-app inbox read
+                    from the bell on the Feed tab, and disable specific notification categories in Settings →
+                    Notifications.</li>
+                <li><strong>Manage follow requests</strong> — accept or reject pending requests at your account from the
+                    Notifications inbox, or cancel a pending request you've sent by tapping the "Requested" button on
+                    the target profile.</li>
                 <li><strong>Delete your account and all associated data</strong> through Settings → Delete account, or
                     by emailing <a href="mailto:wilkylegreer@gmail.com">wilkylegreer@gmail.com</a> from the address
                     associated with your account. Deletion requests are processed within 30 days. When an account is
-                    deleted, the associated profile, posts, follows, reactions, RSVPs, and events are removed; feedback
-                    rows are retained but their <code>user_id</code> is cleared.</li>
+                    deleted, the associated profile, posts, follows, follow requests, reactions, RSVPs, events,
+                    notification rows, and notification preferences are removed; feedback rows are retained but their
+                    <code>user_id</code> is cleared.</li>
                 <li><strong>Remove a stored account from the switcher</strong> without deleting the underlying account —
                     long-press the account row in the account switcher and tap "Remove from this device."</li>
             </ul>
